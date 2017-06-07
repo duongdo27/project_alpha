@@ -11,6 +11,9 @@ class League(models.Model):
     class Meta:
         unique_together = ("name", "year", "parent")
 
+    def __unicode__(self):
+        return self.name
+
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
@@ -18,6 +21,9 @@ class Team(models.Model):
 
     class Meta:
         unique_together = ("name", "parent")
+
+    def __unicode__(self):
+        return self.name
 
 
 class Match(models.Model):
@@ -31,3 +37,6 @@ class Match(models.Model):
 
     class Meta:
         unique_together = ("league", "home_team", "away_team", "round")
+
+    def __unicode__(self):
+        return "{} vs {}".format(self.home_team, self.away_team)
