@@ -12,7 +12,7 @@ class League(models.Model):
         unique_together = ("name", "year", "parent")
 
     def __unicode__(self):
-        return self.name
+        return "{} {}".format(self.name, self.year)
 
 
 class Team(models.Model):

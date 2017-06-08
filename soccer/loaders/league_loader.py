@@ -4,7 +4,8 @@ from lxml import html
 from fuzzywuzzy import fuzz
 from datetime import datetime
 
-ABBREV = {"England": "eng"}
+ABBREV = {"England": "tablese/eng",
+          "Italy": "tablesi/ital"}
 
 
 class LeagueLoader(object):
@@ -23,7 +24,7 @@ class LeagueLoader(object):
         self.raw_date = None
 
     def get_raw_text(self):
-        url = "http://www.rsssf.com/tablese/{}{}.html".format(ABBREV[self.parent], self.year)
+        url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], self.year)
         print url
         res = requests.get(url)
         tree = html.fromstring(res.text)
@@ -59,10 +60,13 @@ class LeagueLoader(object):
                         self.matches.append(match)
 
     def convert_date(self, raw_date):
-        the_date = datetime.strptime(raw_date, "%b %d").date()
-        if the_date.month >= 7:
-            return the_date.replace(year=self.year-1)
-        return the_date.replace(year=self.year)
+        if raw_date == "Feb 29":
+            return datetime(self.year, 2, 29).date()
+        else:
+            the_date = datetime.strptime(raw_date, "%b %d").date()
+            if the_date.month >= 7:
+                return the_date.replace(year=self.year-1)
+            return the_date.replace(year=self.year)
 
     def find_team_from_name(self, name):
         if name in self.cache_lookup:
@@ -81,7 +85,7 @@ class LeagueLoader(object):
 
     def process_raw_text(self, raw_text):
         for line in raw_text.splitlines():
-            if line.startswith("Round"):
+            if line.startswith("Round") or line.startswith("Roud"):
                 self.round += 1
             elif self.round == 0:
                 self.create_team_from_line(line)
