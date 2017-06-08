@@ -15,7 +15,9 @@ class TeamAdmin(admin.ModelAdmin):
 
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("__unicode__", "league", "round")
+    search_fields = ("home_team__name", "away_team__name", "round")
+    list_filter = ("league__name", "league__year")
 
 
 
