@@ -8,7 +8,7 @@ import re
 ABBREV = {
     "England": "tablese/eng",     # link for year before 2010 will be http://www.rsssf.com/tablese/eng09.html
     "Italy": "tablesi/ital",
-    "France": "tablesf/fran",      # dash problem
+    "France": "tablesf/fran",
     "Spain": "tabless/span",
     "Germany": "tablesd/duit",     # cannot find any match  "- - - - - - - - - - - - - - - - - - - - - - - - - - - -"
     "Netherlands": "tablesn/ned",  # cannot find any match
@@ -34,7 +34,10 @@ class LeagueLoader(object):
         self.current_date = None
 
     def get_raw_text(self):
-        url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], self.year)
+        if self.year >= 2010:
+            url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], self.year)
+        else:
+            url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], str(self.year)[-2:])
         print url
         res = requests.get(url)
         tree = html.fromstring(res.text)
@@ -69,15 +72,17 @@ class LeagueLoader(object):
                 if result:
                     team, _ = Team.objects.get_or_create(name=result["team"], parent=self.parent)
                     self.teams.append(team)
-            else:
-                self.read_date_line(line)
-                result = self.read_match_line(line)
-                if result:
-                    match, _ = Match.objects.get_or_create(
-                                league=self.league, home_team=result["home_team"], away_team=result["away_team"],
-                                home_score=result["home_score"], away_score=result["away_score"], round=self.round,
-                                date=self.current_date)
-                    self.matches.append(match)
+                continue
+            if "Final Table" in line:
+                return
+            self.read_date_line(line)
+            result = self.read_match_line(line)
+            if result:
+                match, _ = Match.objects.get_or_create(
+                            league=self.league, home_team=result["home_team"], away_team=result["away_team"],
+                            home_score=result["home_score"], away_score=result["away_score"], round=self.round,
+                            date=self.current_date)
+                self.matches.append(match)
 
     @staticmethod
     def read_round_line(line):
@@ -87,7 +92,7 @@ class LeagueLoader(object):
 
     @staticmethod
     def read_team_line(line):
-        match_obj = re.match(r"(\d+)\.(?P<team>\D+)", line)
+        match_obj = re.match(r" ?(\d+)\.(?P<team>\D+)", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
