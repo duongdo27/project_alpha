@@ -1,0 +1,36 @@
+Bundesliga:
+- 2010: Ronud 8
+- 2011: stopped by ipdb
+- 2012: Website has no match
+
+Eredivisie:
+- 2017: Round 2 become Round 4
+
+La liga:
+- 2012: Website has no match
+
+Liga ZON Sagres:
+- 2011: Website has no match
+- 2012: Website has 14/30 match
+- 2013: ValueError: unconverted data remains: 1
+
+Ligue 1:
+- 2012: Website has no match
+- 2010: Round 11 after round 17
+
+Premier League:
+- 2011: Website only round until 9
+- 2012: Website has no match
+
+Russia:
+- 2016: Round 28 has problem
+- 2011: No link
+
+Serie A:
+- 2014: 'Sug 24' should be 'Aug 24'
+- 2012: Website has no match
+- 2010: ound 8 instead Round 8
+
+VLeague:
+- 2014: ValueError: unconverted data remains: 0
+
