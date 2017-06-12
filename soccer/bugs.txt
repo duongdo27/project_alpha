@@ -23,14 +23,11 @@ Premier League:
 - 2012: Website has no match
 
 Russia:
-- 2016: Round 28 has problem
 - 2011: No link
 
 Serie A:
-- 2014: 'Sug 24' should be 'Aug 24'
 - 2012: Website has no match
-- 2010: ound 8 instead Round 8
 
 VLeague:
-- 2014: ValueError: unconverted data remains: 0
+- 2014: ValueError: unconverted data remains: 0 - date in the same line
 

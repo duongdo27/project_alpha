@@ -96,7 +96,8 @@ class LeagueLoader(object):
 
     @staticmethod
     def read_round_line(line):
-        match_obj = re.match(r"Roun?d (?P<round>\d+)", line)
+        # new change
+        match_obj = re.match(r" ?R?o?un?d (?P<round>\d+)", line)
         if match_obj:
             return {"round": int(match_obj.group("round"))}
 
@@ -122,6 +123,9 @@ class LeagueLoader(object):
             raw_date = "{} {}".format(match_obj.group("month"), match_obj.group("day"))
             if raw_date == "Feb 29":
                 self.current_date = datetime(self.year, 2, 29).date()
+            # new change:
+            if raw_date == "Sug 24":
+                raw_date = "Aug 24"
             else:
                 the_date = datetime.strptime(raw_date, "%b %d").date()
                 if the_date.month >= 7:
