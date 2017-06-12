@@ -6,13 +6,13 @@ from datetime import datetime
 import re
 
 ABBREV = {
-    "England": "tablese/eng",     # link for year before 2010 will be http://www.rsssf.com/tablese/eng09.html
-    "Italy": "tablesi/ital",
-    "France": "tablesf/fran",
-    "Spain": "tabless/span",
+    "England": "tablese/eng",   # done
+    "Italy": "tablesi/ital",    # 'cannot not find match'
+    "France": "tablesf/fran",   # 'cannot not find match'
+    "Spain": "tabless/span",    # 'cannot not find match'
     "Germany": "tablesd/duit",     # cannot find any match  "- - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-    "Netherlands": "tablesn/ned",  # cannot find any match
-    "Vietnam": "tablesv/viet",     # cannot find any match, datetime has problem
+    "Netherlands": "tablesn/ned",   # Round does not match
+    "Vietnam": "tablesv/viet",     # datetime has problem
     "Portugal": "tablesp/port",
     "Russia": "tablesr/rus",       # cannot split because having scorer name besides the result
 }
@@ -40,10 +40,14 @@ class LeagueLoader(object):
             url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], str(self.year)[-2:])
         print url
         res = requests.get(url)
+        res.encoding = res.apparent_encoding
         tree = html.fromstring(res.text)
-        for raw_text in tree.xpath("//pre[1]/text()"):
-            if raw_text.strip():
-                return raw_text
+        #import ipdb
+        #ipdb.set_trace()
+        raw_text = ""
+        for text in tree.xpath("//pre[1]/text()"):
+            raw_text += text.strip() + "\n"
+        return raw_text
 
     def find_team_from_name(self, name):
         if name in self.cache_lookup:
@@ -66,6 +70,7 @@ class LeagueLoader(object):
             if result:
                 self.round += 1
                 assert self.round == result["round"], "Round does not match"
+                print self.round
                 continue
             if self.round == 0:
                 result = self.read_team_line(line)
@@ -78,11 +83,16 @@ class LeagueLoader(object):
             self.read_date_line(line)
             result = self.read_match_line(line)
             if result:
-                match, _ = Match.objects.get_or_create(
-                            league=self.league, home_team=result["home_team"], away_team=result["away_team"],
-                            home_score=result["home_score"], away_score=result["away_score"], round=self.round,
-                            date=self.current_date)
-                self.matches.append(match)
+                try:
+                    match, _ = Match.objects.get_or_create(
+                                league=self.league, home_team=result["home_team"], away_team=result["away_team"],
+                                home_score=result["home_score"], away_score=result["away_score"], round=self.round,
+                                date=self.current_date)
+                    self.matches.append(match)
+                except:
+                    import ipdb
+                    ipdb.set_trace()
+
 
     @staticmethod
     def read_round_line(line):
@@ -92,7 +102,7 @@ class LeagueLoader(object):
 
     @staticmethod
     def read_team_line(line):
-        match_obj = re.match(r" ?(\d+)\.(?P<team>\D+)", line)
+        match_obj = re.match(r" ?((\d+)\.)+(?P<team>.+)(\s+\d+){5}", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
