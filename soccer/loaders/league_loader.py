@@ -69,8 +69,11 @@ class LeagueLoader(object):
             result = self.read_round_line(line)
             if result:
                 self.round += 1
-                assert self.round == result["round"], "Round does not match"
                 print self.round
+                wrong_round_ls = [("Eredivisie", 2017), ("Ligue 1", 2010)]
+                if (self.name, self.year) in wrong_round_ls:
+                    continue
+                assert self.round == result["round"], "Round does not match"
                 continue
             if self.round == 0:
                 result = self.read_team_line(line)
@@ -93,22 +96,28 @@ class LeagueLoader(object):
                     import ipdb
                     ipdb.set_trace()
 
+    def read_round_line(self, line):
+        match_obj = re.match(r" ?R?o?(un?|nu)d (?P<round>\d+)(\s+)\[(?P<month>\w+) (?P<day>\d+)\]", line)
+        if match_obj:
+            self.save_current_date(match_obj.group("month"), match_obj.group("day"))
+            return {"round": int(match_obj.group("round"))}
 
-    @staticmethod
-    def read_round_line(line):
-        # new change
-        match_obj = re.match(r" ?R?o?un?d (?P<round>\d+)", line)
+        match_obj = re.match(r" ?R?o?(un?|nu)d (?P<round>\d+)", line)
         if match_obj:
             return {"round": int(match_obj.group("round"))}
 
+
     @staticmethod
     def read_team_line(line):
-        match_obj = re.match(r" ?((\d+)\.)+(?P<team>.+)(\s+\d+){5}", line)
+        match_obj = re.match(r" ?((\d+)\. ?)+(?P<team>.+)(\s+\d+){2}(-(\s*\d+)){2}(\s+\d+)-", line)
+        if match_obj:
+            return {"team": match_obj.group("team").strip()}
+        match_obj = re.match(r" ?((\d+)\. ?)+(?P<team>.+)(\s+\d+){5}-", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
     def read_match_line(self, line):
-        match_obj = re.match(r"(?P<home_team>\D+)(?P<home_score>\d+)-(?P<away_score>\d+)(?P<away_team>\D+)", line)
+        match_obj = re.match(r"(\d+\.?)?(?P<home_team>\D+)(?P<home_score>\d+)-(?P<away_score>\d+)(\s+)(\d+\.?)?(?P<away_team>\D+)", line)
         if match_obj:
             return {
                 "home_team": self.find_team_from_name(match_obj.group("home_team").strip()),
@@ -117,21 +126,24 @@ class LeagueLoader(object):
                 "away_team": self.find_team_from_name(match_obj.group("away_team").strip()),
                 }
 
+    def save_current_date(self, month, day):
+        raw_date = "{} {}".format(month, day)
+        if raw_date == "Feb 29":
+            self.current_date = datetime(self.year, 2, 29).date()
+        wrong_dates_lookup = {"Sug 24": "Aug 24", "Feb 211": "Feb 11", "Jul 120": "Jul 20"}
+        correct_date = wrong_dates_lookup.get(raw_date, raw_date)
+        the_date = datetime.strptime(correct_date, "%b %d").date()
+        if self.name == "VLeague":
+            self.current_date = the_date.replace(year=self.year)
+        elif the_date.month >= 7:
+            self.current_date = the_date.replace(year=self.year-1)
+        else:
+            self.current_date = the_date.replace(year=self.year)
+
     def read_date_line(self, line):
         match_obj = re.match(r"\[(?P<month>\w+) (?P<day>\d+)\]", line)
         if match_obj:
-            raw_date = "{} {}".format(match_obj.group("month"), match_obj.group("day"))
-            if raw_date == "Feb 29":
-                self.current_date = datetime(self.year, 2, 29).date()
-            # new change:
-            if raw_date == "Sug 24":
-                raw_date = "Aug 24"
-            else:
-                the_date = datetime.strptime(raw_date, "%b %d").date()
-                if the_date.month >= 7:
-                    self.current_date = the_date.replace(year=self.year-1)
-                else:
-                    self.current_date = the_date.replace(year=self.year)
+            self.save_current_date(match_obj.group("month"), match_obj.group("day"))
 
     def run(self):
         raw_text = self.get_raw_text()
