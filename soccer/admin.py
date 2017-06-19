@@ -5,14 +5,14 @@ from .models import League, Team, Match
 
 @admin.register(League)
 class LeagueAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("name", "parent", "year", "disposition")
+    list_filter = ("name", "parent", "year", "disposition")
 
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
     list_display = ("name", "parent")
-    search_fields = ("name",)
-    list_filter = ("parent",)
+    list_filter = ("name", "parent",)
 
 
 @admin.register(Match)

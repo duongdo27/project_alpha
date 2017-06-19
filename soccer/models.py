@@ -7,6 +7,7 @@ class League(models.Model):
     name = models.CharField(max_length=100)
     year = models.IntegerField()
     parent = models.CharField(max_length=100)
+    disposition = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ("name", "year", "parent")

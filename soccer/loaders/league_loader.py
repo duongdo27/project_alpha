@@ -22,12 +22,11 @@ ABBREV = {
 
 
 class LeagueLoader(object):
-    def __init__(self, name, year, parent, force_reload=False):
+    def __init__(self, name, year, parent):
         # Info
         self.name = name
         self.year = year
         self.parent = parent
-        self.force_reload = force_reload
 
         # Data
         self.league = None
@@ -212,11 +211,21 @@ class LeagueLoader(object):
         """
         # Get or create league
         self.league = League.objects.filter(name=self.name, year=self.year, parent=self.parent).first()
-        if self.league and not self.force_reload:
-            return
+        if self.league:
+            if self.league.disposition:
+                print 'League {} {} is already loaded'.format(self.name, self.year)
+                return
         else:
             self.league = League.objects.create(name=self.name, year=self.year, parent=self.parent)
 
+        # Process raw text
         raw_text = self.get_raw_text()
         self.process_raw_text(raw_text)
-        assert self.matches, "Cannot find any match"
+
+        # Decide result
+        if self.matches:
+            print 'League {} {} load successfully'.format(self.name, self.year)
+        else:
+            print 'League {} {} fail to load'.format(self.name, self.year)
+            self.league.disposition = False
+            self.league.save()
