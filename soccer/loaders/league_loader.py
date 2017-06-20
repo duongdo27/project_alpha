@@ -22,11 +22,8 @@ ABBREV = {
 
 
 class LeagueLoader(object):
-    def __init__(self, name, year, parent):
-        # Info
-        self.name = name
-        self.year = year
-        self.parent = parent
+    def __init__(self, params):
+        self.params = params
 
         # Data
         self.league = None
@@ -43,10 +40,10 @@ class LeagueLoader(object):
         :return: Get raw text from HTML in RSSSF website
         """
         # Construct URL
-        if self.year >= 2010:
-            url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], self.year)
+        if self.params["year"] >= 2010:
+            url = "http://www.rsssf.com/{}{}.html".format(self.params["permalink"], self.params["year"])
         else:
-            url = "http://www.rsssf.com/{}{}.html".format(ABBREV[self.parent], str(self.year)[-2:])
+            url = "http://www.rsssf.com/{}{}.html".format(self.params["permalink"], str(self.params["year"])[-2:])
         print url
 
         # Get html, change encoding, convert to tree
@@ -94,18 +91,16 @@ class LeagueLoader(object):
             result = self.read_round_line(line)
             if result:
                 self.round += 1
-                print self.round
-                wrong_round_ls = [("Eredivisie", 2017), ("Ligue 1", 2010)]
-                if (self.name, self.year) in wrong_round_ls:
+                if 'wrong_rounds' in self.params:
                     continue
-                assert self.round == result["round"], "Round does not match"
+                assert self.round == result["round"], "Round {} does not match".format(self.round)
                 continue
 
             # Check if this is the line for team
             if self.round == 0:
                 result = self.read_team_line(line)
                 if result:
-                    team, _ = Team.objects.get_or_create(name=result["team"], parent=self.parent)
+                    team, _ = Team.objects.get_or_create(name=result["team"], parent=self.params["parent"])
                     self.teams.append(team)
                 continue
 
@@ -119,11 +114,9 @@ class LeagueLoader(object):
             # Check if this is the line for match
             result = self.read_match_line(line)
             if result:
-                match = Match.objects.create(
-                        league=self.league, home_team=result["home_team"], away_team=result["away_team"],
-                        home_score=result["home_score"], away_score=result["away_score"], round=self.round,
-                        date=self.current_date)
-                self.matches.append(match)
+                result["round"] = self.round
+                result["current_date"] = self.current_date
+                self.matches.append(result)
 
     def read_round_line(self, line):
         """
@@ -131,13 +124,13 @@ class LeagueLoader(object):
         :return: Find round number, and possible date
         """
         # Round and date
-        match_obj = re.match(r" ?R?o?(un?|nu)d (?P<round>\d+)(\s+)\[(?P<month>\w+) (?P<day>\d+)\]", line)
+        match_obj = re.match(r" ?(Roudn|Ronud|R?o?un?d) (?P<round>\d+)(\s+)\[(?P<month>\w+) (?P<day>\d+)\]", line)
         if match_obj:
             self.save_current_date(match_obj.group("month"), match_obj.group("day"))
             return {"round": int(match_obj.group("round"))}
 
         # Round only
-        match_obj = re.match(r" ?R?o?(un?|nu)d (?P<round>\d+)", line)
+        match_obj = re.match(r" ?(Roudn|Ronud|R?o?un?d) (?P<round>\d+)", line)
         if match_obj:
             return {"round": int(match_obj.group("round"))}
 
@@ -148,12 +141,12 @@ class LeagueLoader(object):
         :return: Find team name
         """
         # Normal case
-        match_obj = re.match(r" ?((\d+)\. ?)+(?P<team>.+)(\s+\d+){2}(-(\s*\d+)){2}(\s+\d+)-", line)
+        match_obj = re.match(r" ?(\d+\. ?)+(?P<team>.+)(\s+\d+){2}(-(\s*\d+)){2}(\s+\d+)-", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
         # Special case
-        match_obj = re.match(r" ?((\d+)\. ?)+(?P<team>.+)(\s+\d+){5}-", line)
+        match_obj = re.match(r" ?(\d+\. ?)+(?P<team>.+)(\s+\d+){5}-", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
@@ -162,7 +155,10 @@ class LeagueLoader(object):
         :param line:
         :return: Find match info
         """
-        match_obj = re.match(r"(\d+\.?)?(?P<home_team>\D+)(?P<home_score>\d+)-(?P<away_score>\d+)(\s+)(\d+\.?)?(?P<away_team>\D+)", line)
+        if '[abandoned' in line or '[awarded' in line:
+            return
+        match_obj = re.match(r"(\d+\. ?)?(?P<home_team>\D+)(?P<home_score>\d+)-"
+                             r"(?P<away_score>\d+)(\s+)(\d+\. ?)?(?P<away_team>\D+)", line)
         if match_obj:
             return {
                 "home_team": self.find_team_from_name(match_obj.group("home_team").strip()),
@@ -181,20 +177,23 @@ class LeagueLoader(object):
 
         # Leaf year for Feb 29
         if raw_date == "Feb 29":
-            self.current_date = datetime(self.year, 2, 29).date()
+            self.current_date = datetime(self.params["year"], 2, 29).date()
+            return
 
         # Fix dates
-        wrong_dates_lookup = {"Sug 24": "Aug 24", "Feb 211": "Feb 11", "Jul 120": "Jul 20"}
-        correct_date = wrong_dates_lookup.get(raw_date, raw_date)
+        if 'wrong_dates' in self.params:
+            correct_date = self.params['wrong_dates'].get(raw_date, raw_date)
+        else:
+            correct_date = raw_date
         the_date = datetime.strptime(correct_date, "%b %d").date()
 
         # Fill in corresponding year
-        if self.name == "VLeague":
-            self.current_date = the_date.replace(year=self.year)
+        if 'within_year' in self.params:
+            self.current_date = the_date.replace(year=self.params["year"])
         elif the_date.month >= 7:
-            self.current_date = the_date.replace(year=self.year-1)
+            self.current_date = the_date.replace(year=self.params["year"]-1)
         else:
-            self.current_date = the_date.replace(year=self.year)
+            self.current_date = the_date.replace(year=self.params["year"])
 
     def read_date_line(self, line):
         """
@@ -205,27 +204,61 @@ class LeagueLoader(object):
         if match_obj:
             self.save_current_date(match_obj.group("month"), match_obj.group("day"))
 
-    def run(self):
+    def process_awarded_matches(self):
+        """
+        :return: Process awarded matches
+        """
+        if 'awarded_matches' not in self.params:
+            return
+        for award_match in self.params['awarded_matches']:
+            result = self.read_match_line(award_match['line'])
+            result["round"] = award_match['round']
+            self.read_date_line(award_match['current_date'])
+            result["current_date"] = self.current_date
+            self.matches.append(result)
+
+    def main_run(self):
         """
         :return: Main function
         """
         # Get or create league
-        self.league = League.objects.filter(name=self.name, year=self.year, parent=self.parent).first()
+        self.league = League.objects.filter(name=self.params["name"], year=self.params["year"],
+                                            parent=self.params["parent"]).first()
         if self.league:
             if self.league.disposition:
-                print 'League {} {} is already loaded'.format(self.name, self.year)
+                print 'League {} {} is already loaded'.format(self.params["name"], self.params["year"])
                 return
         else:
-            self.league = League.objects.create(name=self.name, year=self.year, parent=self.parent)
+            self.league = League.objects.create(name=self.params["name"], year=self.params["year"],
+                                                parent=self.params["parent"], disposition=False)
 
         # Process raw text
         raw_text = self.get_raw_text()
         self.process_raw_text(raw_text)
+        self.process_awarded_matches()
 
         # Decide result
-        if self.matches:
-            print 'League {} {} load successfully'.format(self.name, self.year)
-        else:
-            print 'League {} {} fail to load'.format(self.name, self.year)
-            self.league.disposition = False
-            self.league.save()
+        import ipdb
+        ipdb.set_trace()
+        assert len(self.matches) > 0, 'League {} {} has no match'.format(self.params["name"], self.params["year"])
+        assert len(self.matches) == self.params["matches"], 'League {} {} has incorrect number of matches'\
+            .format(self.params["name"], self.params["year"])
+        Match.objects.filter(league=self.league).delete()
+        for result in self.matches:
+            Match.objects.create(
+                league=self.league, home_team=result["home_team"], away_team=result["away_team"],
+                home_score=result["home_score"], away_score=result["away_score"], round=result["round"],
+                date=result["current_date"])
+
+        print 'League {} {} load successfully'.format(self.params["name"], self.params["year"])
+        self.league.disposition = True
+        self.league.save()
+
+    def run(self):
+        """
+        :return: Wrapper
+        """
+        try:
+            self.main_run()
+        except Exception as e:
+            print e

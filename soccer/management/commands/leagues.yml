@@ -1,0 +1,189 @@
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2010
+  matches: 380
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2013
+  matches: 380
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2014
+  matches: 380
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2015
+  matches: 380
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2016
+  matches: 380
+- name: Premier League
+  parent: England
+  permalink: tablese/eng
+  year: 2017
+  matches: 380
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2010
+  matches: 380
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2011
+  matches: 380
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2013
+  matches: 380
+  awarded_matches:
+    - round: 4
+      line: Cagliari 0-3 Roma
+      current_date: Sep 23
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2014
+  matches: 380
+  wrong_dates:
+    Sug 24: Aug 24
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2015
+  matches: 380
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2016
+  matches: 380
+- name: Serie A
+  parent: Italy
+  permalink: tablesi/ital
+  year: 2017
+  matches: 380
+  awarded_matches:
+    - round: 2
+      line: Sassuolo 0-3 Pescara
+      current_date: Aug 28
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2010
+  matches: 380
+  wrong_rounds: true
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2011
+  matches: 380
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2013
+  matches: 380
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2014
+  matches: 380
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2015
+  matches: 380
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2016
+  matches: 380
+- name: Ligue 1
+  parent: France
+  permalink: tablesf/fran
+  year: 2017
+  matches: 380
+  awarded_matches:
+    - round: 33
+      line: Bastia 0-3 Lyon
+      current_date: Apr 16
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2010
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2011
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2013
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2014
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2015
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2016
+  matches: 380
+- name: Liga BBVA
+  parent: Spain
+  permalink: tabless/span
+  year: 2017
+  matches: 380
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2010
+  matches: 306
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2011
+  matches: 306
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2013
+  matches: 380
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2014
+  matches: 306
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2015
+  matches: 306
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2016
+  matches: 306
+- name: Bundesliga
+  parent: Germany
+  permalink: tablesd/duit
+  year: 2017
+  matches: 306
+
+
+# wrong_dates_lookup = {"Sug 24": "Aug 24", "Feb 211": "Feb 11", "Jul 120": "Jul 20"}
+# wrong_round_ls = [("Eredivisie", 2017), ("Ligue 1", 2010)]
