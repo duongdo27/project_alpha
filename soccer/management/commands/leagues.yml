@@ -153,12 +153,12 @@
   permalink: tablesd/duit
   year: 2010
   matches: 306
-- name: Bundesliga
+- name: Bundesliga  # incorrect number of matches
   parent: Germany
   permalink: tablesd/duit
   year: 2011
   matches: 306
-- name: Bundesliga
+- name: Bundesliga  # incorrect number of matches
   parent: Germany
   permalink: tablesd/duit
   year: 2013
@@ -183,7 +183,131 @@
   permalink: tablesd/duit
   year: 2017
   matches: 306
-
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2010
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2011
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2012
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2013
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2014
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2015
+  matches: 306
+- name: Eredivisie
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2016
+  matches: 306
+- name: Eredivisie   # Round 2 does not match
+  parent: Netherlands
+  permalink: tablesn/ned
+  year: 2017
+  matches: 306
+- name: VLeague
+  parent: Vietnam
+  permalink: tablesv/viet
+  year: 2013
+  matches: 130
+- name: VLeague  # unconverted data remains: 0
+  parent: Vietnam
+  permalink: tablesv/viet
+  year: 2014
+  matches: 140
+- name: VLeague
+  parent: Vietnam
+  permalink: tablesv/viet
+  year: 2015
+  matches: 182
+- name: VLeague
+  parent: Vietnam
+  permalink: tablesv/viet
+  year: 2016
+  matches: 182
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2010
+  matches: 240
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2013
+  matches: 240
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2014
+  matches: 240
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2015
+  matches: 306
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2016
+  matches: 306
+- name: Liga ZON Sagres
+  parent: Portugal
+  permalink: tablesp/port
+  year: 2017
+  matches: 306
+- name: Russian Premier League
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2010
+  matches: 240
+- name: Russian Premier League   # has incorrect number of matches
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2012
+  matches: 240
+- name: Russian Premier League
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2013
+  matches: 240
+- name: Russian Premier League
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2014
+  matches: 240
+- name: Russian Premier League  # has incorrect number of matches
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2015
+  matches: 240
+- name: Russian Premier League
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2016
+  matches: 240
+- name: Russian Premier League  # has incorrect number of matches
+  parent: Russia
+  permalink: tablesr/rus
+  year: 2017
+  matches: 240
 
 # wrong_dates_lookup = {"Sug 24": "Aug 24", "Feb 211": "Feb 11", "Jul 120": "Jul 20"}
 # wrong_round_ls = [("Eredivisie", 2017), ("Ligue 1", 2010)]

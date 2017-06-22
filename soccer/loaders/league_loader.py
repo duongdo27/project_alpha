@@ -238,8 +238,8 @@ class LeagueLoader(object):
         self.process_awarded_matches()
 
         # Decide result
-        import ipdb
-        ipdb.set_trace()
+        # import ipdb
+        # ipdb.set_trace()
         assert len(self.matches) > 0, 'League {} {} has no match'.format(self.params["name"], self.params["year"])
         assert len(self.matches) == self.params["matches"], 'League {} {} has incorrect number of matches'\
             .format(self.params["name"], self.params["year"])
