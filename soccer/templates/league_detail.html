@@ -1,0 +1,3 @@
+<p>{{ object.name }} | {{ object.parent }} | {{ object.year }}</p>
+
+<a href="{% url 'soccer:league_years' object.parent object.name %}">Back</a>

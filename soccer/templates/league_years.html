@@ -1,0 +1,12 @@
+<ul>
+{% for league in object_list %}
+    <li>
+        <a href="{% url 'soccer:league_detail' league.id %}">
+        {{ league.name }} | {{ league.parent }} | {{ league.year }}
+    </li>
+{% empty %}
+    <li>No league available.</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'soccer:leagues' %}">Back</a>
