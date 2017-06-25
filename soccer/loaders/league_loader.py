@@ -74,7 +74,6 @@ class LeagueLoader(object):
         """
         # Read line by line
         for line in raw_text.splitlines():
-
             # Check if this is the line for round
             result = self.read_round_line(line)
             if result:
@@ -85,15 +84,15 @@ class LeagueLoader(object):
                 continue
 
             # Check if this is the line for team
-            if self.round == 0:
-                result = self.read_team_line(line)
-                if result:
+            result = self.read_team_line(line)
+            if result:
+                if self.round == 0:
                     team, _ = Team.objects.get_or_create(name=result["team"], parent=self.params["parent"])
                     self.teams.append(team)
                 continue
 
             # Return if done
-            if "Final Table" in line:
+            if "Final Table" in line and self.round > 0:
                 return
 
             # Check if this is the line for date
@@ -143,9 +142,11 @@ class LeagueLoader(object):
         :param line:
         :return: Find match info
         """
-        if '[abandoned' in line or '[awarded' in line:
+        if '[abandoned' in line or '[awarded' in line or '[Technical' in line:
             return
-        line = line.replace('1.', '').strip()
+        if line.startswith('['):
+            return
+        line = line.replace('1.', '').replace(u'\u2013', '-').strip()
 
         match_obj = re.match(r"(?P<home_team>.+)(\s+)(?P<home_score>\d+)-"
                              r"(?P<away_score>\d+)(\s+)(?P<away_team>.+)", line)
@@ -211,9 +212,6 @@ class LeagueLoader(object):
         """
         :return: Main function
         """
-        if self.params['name'] != 'Bundesliga':
-            return
-
         # Get or create league
         self.league = League.objects.filter(name=self.params["name"], year=self.params["year"],
                                             parent=self.params["parent"]).first()
@@ -231,7 +229,6 @@ class LeagueLoader(object):
         self.process_awarded_matches()
 
         # Decide result
-        import ipdb; ipdb.set_trace()
         assert len(self.matches) > 0, 'League {} {} has no match'.format(self.params["name"], self.params["year"])
         assert len(self.matches) == self.params["matches"], 'League {} {} has incorrect number of matches'\
             .format(self.params["name"], self.params["year"])
