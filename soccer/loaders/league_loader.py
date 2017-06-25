@@ -8,18 +8,6 @@ from fuzzywuzzy import fuzz
 from datetime import datetime
 import re
 
-ABBREV = {
-    "England": "tablese/eng",
-    "Italy": "tablesi/ital",
-    "France": "tablesf/fran",
-    "Spain": "tabless/span",
-    "Germany": "tablesd/duit",
-    "Netherlands": "tablesn/ned",
-    "Vietnam": "tablesv/viet",
-    "Portugal": "tablesp/port",
-    "Russia": "tablesr/rus",
-}
-
 
 class LeagueLoader(object):
     def __init__(self, params):
@@ -157,8 +145,10 @@ class LeagueLoader(object):
         """
         if '[abandoned' in line or '[awarded' in line:
             return
-        match_obj = re.match(r"(\d+\. ?)?(?P<home_team>\D+)(?P<home_score>\d+)-"
-                             r"(?P<away_score>\d+)(\s+)(\d+\. ?)?(?P<away_team>\D+)", line)
+        line = line.replace('1.', '').strip()
+
+        match_obj = re.match(r"(?P<home_team>.+)(\s+)(?P<home_score>\d+)-"
+                             r"(?P<away_score>\d+)(\s+)(?P<away_team>.+)", line)
         if match_obj:
             return {
                 "home_team": self.find_team_from_name(match_obj.group("home_team").strip()),
@@ -221,6 +211,9 @@ class LeagueLoader(object):
         """
         :return: Main function
         """
+        if self.params['name'] != 'Bundesliga':
+            return
+
         # Get or create league
         self.league = League.objects.filter(name=self.params["name"], year=self.params["year"],
                                             parent=self.params["parent"]).first()
@@ -238,8 +231,7 @@ class LeagueLoader(object):
         self.process_awarded_matches()
 
         # Decide result
-        # import ipdb
-        # ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
         assert len(self.matches) > 0, 'League {} {} has no match'.format(self.params["name"], self.params["year"])
         assert len(self.matches) == self.params["matches"], 'League {} {} has incorrect number of matches'\
             .format(self.params["name"], self.params["year"])
