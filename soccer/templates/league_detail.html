@@ -1,3 +1,23 @@
-<p>{{ object.name }} | {{ object.parent }} | {{ object.year }}</p>
+{% extends "base.html" %}
 
-<a href="{% url 'soccer:league_years' object.parent object.name %}">Back</a>
+{% block content %}
+<h1 class="text-success">{{ object.name }} ({{ object.parent }}) {{ object.year }}</h1>
+
+<div class="panel-group">
+{% for round in rounds %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+              <a data-toggle="collapse" href="#collapse{{ round }}">Round {{ round }}</a>
+          </h3>
+        </div>
+        <div id="collapse{{ round }}" class="panel-collapse collapse">
+          <div class="panel-body">Hello World</div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<br>
+<a class="btn btn-warning btn-lg" href="{% url 'soccer:league_years' object.parent object.name %}">Back</a>
+{% endblock %}

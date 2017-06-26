@@ -1,0 +1,13 @@
+.league {
+    background-color: #fffad1;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 25px;
+    height: 100px;
+    text-align: center;
+}
+
+.panel-title a {
+    display: block;
+    padding: 10px;
+}

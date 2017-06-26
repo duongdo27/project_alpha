@@ -1,11 +1,15 @@
-<ul>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
 {% for league in object_list %}
-    <li>
-        <a href="{% url 'soccer:league_years' league.parent league.name %}">
-            {{ league.name }} | {{ league.parent }}
-        </a>
-    </li>
-{% empty %}
-    <li>No league available.</li>
+    <div class="col-sm-4">
+        <div class="league">
+            <a href="{% url 'soccer:league_years' league.parent league.name %}">
+                <h3>{{ league.name }} ({{ league.parent }})</h3>
+            </a>
+        </div>
+    </div>
 {% endfor %}
-</ul>
+</div>
+{% endblock %}

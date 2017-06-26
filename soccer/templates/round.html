@@ -1,0 +1,11 @@
+<ul>
+{% for match in object_list %}
+    <li>
+        {{ match.home_team }} {{ match.home_score }} - {{ match.away_score }} {{ match.away_team }}
+    </li>
+{% empty %}
+    <li>No match available.</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'soccer:league_detail' league_id  %}">Back</a>
