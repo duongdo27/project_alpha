@@ -4,26 +4,59 @@
 <h1 class="text-success">{{ object.name }} ({{ object.parent }}) {{ object.year }}</h1>
 
 <div class="panel-group">
-{% for matches in data %}
+    {% for matches, standing in data %}
     <div class="panel panel-default">
+        {% with forloop.counter as round %}
         <div class="panel-heading">
             <h3 class="panel-title">
-              <a data-toggle="collapse" href="#collapse{{ forloop.counter }}">Round {{ forloop.counter }}</a>
+                <a data-toggle="collapse" href="#collapse{{ round }}">Round {{ round }}</a>
             </h3>
         </div>
-        <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
+        <div id="collapse{{ round }}" class="panel-collapse collapse">
             <div class="panel-body">
+                <h4>Matches</h4>
                 <div class="row text-center">
                     {% for match in matches %}
-                        <div class="col-sm-offset-1 col-sm-4 text-info"><h5>{{ match.home_team }}</h5></div>
-                        <div class="col-sm-2"><h5>{{ match.home_score }} - {{ match.away_score }}</h5></div>
-                        <div class="col-sm-4 text-danger"><h5>{{ match.away_team }}</h5></div>
+                    <div class="col-sm-offset-1 col-sm-4 text-info"><h5>{{ match.home_team }}</h5></div>
+                    <div class="col-sm-2"><h5>{{ match.home_score }} - {{ match.away_score }}</h5></div>
+                    <div class="col-sm-4 text-danger"><h5>{{ match.away_team }}</h5></div>
                     {% endfor %}
                 </div>
+                <h4>Standing</h4>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Played</th>
+                        <th>Won</th>
+                        <th>Drawn</th>
+                        <th>Lost</th>
+                        <th>GF</th>
+                        <th>GA</th>
+                        <th>GD</th>
+                        <th>Points</th>
+                    </tr>
+                    {% for name, value in standing %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ name }}</td>
+                        <td>{{ round }}</td>
+                        <td>{{ value.won }}</td>
+                        <td>{{ value.drawn }}</td>
+                        <td>{{ value.lost }}</td>
+                        <td>{{ value.gf }}</td>
+                        <td>{{ value.ga }}</td>
+                        <td>{{ value.gd }}</td>
+                        <td>{{ value.points }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
             </div>
         </div>
+        {% endwith %}
     </div>
-{% endfor %}
+    {% endfor %}
 </div>
 
 <br>

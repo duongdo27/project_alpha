@@ -47,10 +47,87 @@ class Match(models.Model):
         data = []
         matches = cls.objects.filter(league=league).order_by('round')
         current_round = -1
-        for match in matches:
+        for index, match in enumerate(matches):
             if match.round != current_round:
+                if current_round != -1:
+                    data[-1] = (data[-1], cls.get_standing(matches[:index]))
                 data.append([match])
                 current_round = match.round
             else:
                 data[-1].append(match)
+        data[-1] = (data[-1], cls.get_standing(matches))
         return data
+
+    @classmethod
+    def compare_team(cls, a, b):
+        if a[1]['points'] < b[1]['points']:
+            return 1
+        if a[1]['points'] > b[1]['points']:
+            return -1
+        if a[1]['gd'] < b[1]['gd']:
+            return 1
+        if a[1]['gd'] > b[1]['gd']:
+            return -1
+
+        if a[1]['gf'] < b[1]['gf']:
+            return 1
+        if a[1]['gf'] > b[1]['gf']:
+            return -1
+
+        if a[0] > b[0]:
+            return 1
+        if a[0] < b[0]:
+            return -1
+        return 0
+
+    @classmethod
+    def get_standing(cls, matches):
+        data = {}
+        for match in matches:
+            if match.home_team in data:
+                data[match.home_team]['gf'] += match.home_score
+                data[match.home_team]['ga'] += match.away_score
+            else:
+                data[match.home_team] = {
+                    'gf': match.home_score,
+                    'ga': match.away_score,
+                    'points': 0,
+                    'won': 0,
+                    'drawn': 0,
+                    'lost': 0,
+                }
+
+            if match.away_team in data:
+                data[match.away_team]['gf'] += match.away_score
+                data[match.away_team]['ga'] += match.home_score
+            else:
+                data[match.away_team] = {
+                    'gf': match.away_score,
+                    'ga': match.home_score,
+                    'points': 0,
+                    'won': 0,
+                    'drawn': 0,
+                    'lost': 0,
+                }
+
+            if match.home_score > match.away_score:
+                data[match.home_team]['points'] += 3
+                data[match.home_team]['won'] += 1
+                data[match.away_team]['lost'] += 1
+            elif match.home_score == match.away_score:
+                data[match.home_team]['points'] += 1
+                data[match.away_team]['points'] += 1
+                data[match.home_team]['drawn'] += 1
+                data[match.away_team]['drawn'] += 1
+            else:
+                data[match.away_team]['points'] += 3
+                data[match.home_team]['lost'] += 1
+                data[match.away_team]['won'] += 1
+
+        standing = []
+        for key, value in data.iteritems():
+            value['gd'] = value['gf'] - value['ga']
+            standing.append((key.name, value))
+
+        standing.sort(cls.compare_team)
+        return standing
