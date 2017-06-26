@@ -41,3 +41,16 @@ class Match(models.Model):
 
     def __unicode__(self):
         return "{} vs {}".format(self.home_team, self.away_team)
+
+    @classmethod
+    def get_match_data(cls, league):
+        data = []
+        matches = cls.objects.filter(league=league).order_by('round')
+        current_round = -1
+        for match in matches:
+            if match.round != current_round:
+                data.append([match])
+                current_round = match.round
+            else:
+                data[-1].append(match)
+        return data

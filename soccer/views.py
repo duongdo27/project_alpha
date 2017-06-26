@@ -39,20 +39,6 @@ class LeagueDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LeagueDetailView, self).get_context_data(**kwargs)
-        max_round = Match.objects.filter(league=self.object).aggregate(Max('round'))['round__max']
-        context['rounds'] = range(1, max_round+1)
+        context['data'] = Match.get_match_data(self.object)
         return context
 
-
-class RoundDetailView(ListView):
-    model = Match
-    template_name = 'round.html'
-
-    def get_queryset(self):
-        return Match.objects.filter(league_id=self.kwargs['league_id'],
-                                    round=self.kwargs['round'])
-
-    def get_context_data(self, **kwargs):
-        context = super(RoundDetailView, self).get_context_data(**kwargs)
-        context['league_id'] = self.kwargs['league_id']
-        return context

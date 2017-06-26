@@ -4,15 +4,23 @@
 <h1 class="text-success">{{ object.name }} ({{ object.parent }}) {{ object.year }}</h1>
 
 <div class="panel-group">
-{% for round in rounds %}
+{% for matches in data %}
     <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">
-              <a data-toggle="collapse" href="#collapse{{ round }}">Round {{ round }}</a>
-          </h3>
+            <h3 class="panel-title">
+              <a data-toggle="collapse" href="#collapse{{ forloop.counter }}">Round {{ forloop.counter }}</a>
+            </h3>
         </div>
-        <div id="collapse{{ round }}" class="panel-collapse collapse">
-          <div class="panel-body">Hello World</div>
+        <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="row text-center">
+                    {% for match in matches %}
+                        <div class="col-sm-offset-1 col-sm-4 text-info"><h5>{{ match.home_team }}</h5></div>
+                        <div class="col-sm-2"><h5>{{ match.home_score }} - {{ match.away_score }}</h5></div>
+                        <div class="col-sm-4 text-danger"><h5>{{ match.away_team }}</h5></div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 {% endfor %}
