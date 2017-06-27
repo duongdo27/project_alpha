@@ -50,16 +50,42 @@ class Match(models.Model):
         for index, match in enumerate(matches):
             if match.round != current_round:
                 if current_round != -1:
-                    data[-1] = (data[-1], cls.get_standing(matches[:index]))
+                    data[-1] = [data[-1], cls.get_standing(matches[:index])]
                 data.append([match])
                 current_round = match.round
             else:
                 data[-1].append(match)
-        data[-1] = (data[-1], cls.get_standing(matches))
+        data[-1] = [data[-1], cls.get_standing(matches)]
+
+        for index in range(len(data)):
+            if index == 0:
+                data[index][1] = cls.compute_movements(data[index][1], None)
+            else:
+                data[index][1] = cls.compute_movements(data[index][1], data[index-1][1])
         return data
 
-    @classmethod
-    def compare_team(cls, a, b):
+    @staticmethod
+    def compute_movements(standing, previous_standing):
+        result = []
+        ranks = {value[0]: index
+                 for index, value in enumerate(standing)}
+        if previous_standing:
+            previous_ranks = {value[0]: index
+                              for index, value in enumerate(previous_standing)}
+        else:
+            previous_ranks = ranks
+
+        for name, value in standing:
+            if ranks[name] > previous_ranks[name]:
+                result.append([name, value, -1])
+            elif ranks[name] == previous_ranks[name]:
+                result.append([name, value, 0])
+            else:
+                result.append([name, value, 1])
+        return result
+
+    @staticmethod
+    def compare_team(a, b):
         if a[1]['points'] < b[1]['points']:
             return 1
         if a[1]['points'] > b[1]['points']:
@@ -127,7 +153,7 @@ class Match(models.Model):
         standing = []
         for key, value in data.iteritems():
             value['gd'] = value['gf'] - value['ga']
-            standing.append((key.name, value))
+            standing.append([key.name, value])
 
         standing.sort(cls.compare_team)
         return standing

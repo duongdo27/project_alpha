@@ -36,9 +36,23 @@
                         <th>GD</th>
                         <th>Points</th>
                     </tr>
-                    {% for name, value in standing %}
+                    {% for name, value, movement in standing %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        {% if movement == 1 %}
+                            <td>{{ forloop.counter }}
+                                <span class="glyphicon glyphicon-triangle-top text-success"></span>
+                            </td>
+                        {% else %}
+                            {% if movement == 0 %}
+                                <td>{{ forloop.counter }}
+                                    <span class="glyphicon glyphicon-triangle-right text-muted"></span>
+                                </td>
+                            {% else %}
+                                <td>{{ forloop.counter }}
+                                    <span class="glyphicon glyphicon-triangle-bottom text-danger"></span>
+                                </td>
+                            {% endif %}
+                        {% endif %}
                         <td>{{ name }}</td>
                         <td>{{ round }}</td>
                         <td>{{ value.won }}</td>
