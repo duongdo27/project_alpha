@@ -79,9 +79,9 @@ class LeagueLoader(object):
             if result:
                 self.round += 1
                 if 'wrong_rounds' in self.params:
-                    continue
+                    continue    # pragma: no cover
                 assert self.round == result["round"], "Round {} does not match".format(self.round)
-                continue
+                continue    # pragma: no cover
 
             # Check if this is the line for team
             result = self.read_team_line(line)
@@ -89,7 +89,7 @@ class LeagueLoader(object):
                 if self.round == 0:
                     team, _ = Team.objects.get_or_create(name=result["team"], parent=self.params["parent"])
                     self.teams.append(team)
-                continue
+                continue    # pragma: no cover
 
             # Return if done
             if "Final Table" in line and self.round > 0:
@@ -127,12 +127,12 @@ class LeagueLoader(object):
         :param line:
         :return: Find team name
         """
-        # Normal case
+        # Special case
         match_obj = re.match(r" ?(\d+\. ?)+(?P<team>.+)(\s+\d+){2}(-(\s*\d+)){2}(\s+\d+)-", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
 
-        # Special case
+        # Normal case
         match_obj = re.match(r" ?(\d+\. ?)+(?P<team>.+)(\s+\d+){5}-", line)
         if match_obj:
             return {"team": match_obj.group("team").strip()}
@@ -204,7 +204,7 @@ class LeagueLoader(object):
         for award_match in self.params['awarded_matches']:
             result = self.read_match_line(award_match['line'])
             result["round"] = award_match['round']
-            self.read_date_line(award_match['current_date'])
+            self.read_date_line("[{}]".format(award_match['current_date']))
             result["current_date"] = self.current_date
             self.matches.append(result)
 
