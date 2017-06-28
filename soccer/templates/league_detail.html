@@ -15,12 +15,16 @@
         <th>GD</th>
         <th>Points</th>
     </tr>
-    {% for name, value in final_standing %}
+    {% for team, value in final_standing %}
     <tr>
         {% with final_standing|length as total %}
         {% with forloop.counter|get_standing_color:total as text_class %}
             <td class="{{ text_class }}">{{ forloop.counter }}</td>
-            <td class="{{ text_class }}">{{ name }}</td>
+            <td>
+                <a class="{{ text_class }}" href="{% url 'soccer:team_detail' object.id team.id %}">
+                    {{ team.name }}
+                </a>
+            </td>
             <td class="{{ text_class }}">{{ value.won }}</td>
             <td class="{{ text_class }}">{{ value.drawn }}</td>
             <td class="{{ text_class }}">{{ value.lost }}</td>

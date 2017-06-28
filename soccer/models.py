@@ -75,13 +75,13 @@ class Match(models.Model):
         else:
             previous_ranks = ranks
 
-        for name, value in standing:
-            if ranks[name] > previous_ranks[name]:
-                result.append([name, value, -1])
-            elif ranks[name] == previous_ranks[name]:
-                result.append([name, value, 0])
+        for team, value in standing:
+            if ranks[team] > previous_ranks[team]:
+                result.append([team, value, -1])
+            elif ranks[team] == previous_ranks[team]:
+                result.append([team, value, 0])
             else:
-                result.append([name, value, 1])
+                result.append([team, value, 1])
         return result
 
     @staticmethod
@@ -151,9 +151,9 @@ class Match(models.Model):
                 data[match.away_team]['won'] += 1
 
         standing = []
-        for key, value in data.iteritems():
+        for team, value in data.iteritems():
             value['gd'] = value['gf'] - value['ga']
-            standing.append([key.name, value])
+            standing.append([team, value])
 
         standing.sort(cls.compare_team)
         return standing
