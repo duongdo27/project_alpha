@@ -39,5 +39,8 @@ class LeagueDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(LeagueDetailView, self).get_context_data(**kwargs)
         context['data'] = Match.get_match_data(self.object)
+
+        all_matches = Match.objects.filter(league=self.object)
+        context['final_standing'] = Match.get_standing(all_matches)
         return context
 
