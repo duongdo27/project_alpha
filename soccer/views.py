@@ -1,6 +1,7 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
 
 from .models import League, Match, Team
 
@@ -44,3 +45,12 @@ class LeagueDetailView(DetailView):
         context['final_standing'] = Match.get_standing(all_matches)
         return context
 
+
+class TeamDetailView(DetailView):
+    model = Team
+    template_name = 'team_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TeamDetailView, self).get_context_data(**kwargs)
+        context['league'] = get_object_or_404(League, pk=self.kwargs['league_id'])
+        return context

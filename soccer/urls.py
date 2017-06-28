@@ -11,4 +11,6 @@ urlpatterns = [
         name='league_years'),
     url(r'^league/(?P<pk>\d+)$', views.LeagueDetailView.as_view(),
         name='league_detail'),
+    url(r'^team/(?P<league_id>\d+)/(?P<pk>\d+)$', views.TeamDetailView.as_view(),
+        name='team_detail'),
 ]

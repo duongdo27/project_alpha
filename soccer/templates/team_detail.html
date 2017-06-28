@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="text-danger">{{ object.name }}</h1>
+<h3 class="text-success">{{ league.name }} ({{ league.parent }}) {{ league.year }}</h3>
+
+<br>
+<a class="btn btn-warning btn-lg" href="{% url 'soccer:league_detail' league.id %}">Back</a>
+{% endblock %}
