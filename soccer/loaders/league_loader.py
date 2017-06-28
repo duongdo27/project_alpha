@@ -58,7 +58,7 @@ class LeagueLoader(object):
         best_ratio = 0
         best_team = None
         for team in self.teams:
-            ratio = fuzz.ratio(team.name, name)
+            ratio = fuzz.ratio(team.name, name) + 50 * int(name in team.name)
             if ratio > best_ratio:
                 best_ratio = ratio
                 best_team = team
