@@ -12,7 +12,8 @@ class LeagueAdmin(admin.ModelAdmin):
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
     list_display = ("name", "parent")
-    list_filter = ("name", "parent",)
+    search_fields = ("name",)
+    list_filter = ("parent",)
 
 
 @admin.register(Match)

@@ -224,28 +224,6 @@
   year: 2017
   matches: 306
   wrong_rounds: true
-- name: VLeague
-  parent: Vietnam
-  permalink: tablesv/viet
-  year: 2013
-  matches: 130
-- name: VLeague
-  parent: Vietnam
-  permalink: tablesv/viet
-  year: 2014
-  matches: 140
-  wrong_dates:
-    Jul 120: Jul 20
-- name: VLeague
-  parent: Vietnam
-  permalink: tablesv/viet
-  year: 2015
-  matches: 182
-- name: VLeague
-  parent: Vietnam
-  permalink: tablesv/viet
-  year: 2016
-  matches: 182
 - name: Liga ZON Sagres
   parent: Portugal
   permalink: tablesp/port
