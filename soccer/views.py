@@ -1,3 +1,4 @@
+import json
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
@@ -52,5 +53,16 @@ class TeamDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(TeamDetailView, self).get_context_data(**kwargs)
-        context['league'] = get_object_or_404(League, pk=self.kwargs['league_id'])
+        league = get_object_or_404(League, pk=self.kwargs['league_id'])
+        context['league'] = league
+        context['data'] = json.dumps([
+            {'x': 10, 'y': 10},
+            {'x': 20, 'y': 12},
+            {'x': 30, 'y': 8},
+            {'x': 40, 'y': 14},
+            {'x': 50, 'y': 6},
+            {'x': 60, 'y': 24},
+            {'x': 70, 'y': -4},
+            {'x': 80, 'y': 10},
+        ])
         return context
