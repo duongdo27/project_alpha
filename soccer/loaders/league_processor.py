@@ -13,6 +13,8 @@ class LeagueProcessor(object):
     @staticmethod
     def compute_info(round_data, match):
         round_data[match.home_team]['round'] = match.round
+        round_data[match.away_team]['round'] = match.round
+
         round_data[match.home_team]['gf'] += match.home_score
         round_data[match.home_team]['ga'] += match.away_score
         round_data[match.home_team]['gd'] += match.home_score - match.away_score
@@ -108,7 +110,7 @@ class LeagueProcessor(object):
                     round_data[match.home_team] = defaultdict(int)
                 if match.away_team not in round_data:
                     round_data[match.away_team] = defaultdict(int)
-                self.compute_info(round_data, match)
+            self.compute_info(round_data, match)
 
         data.append(self.compute_rank(round_data, previous_standing))
         self.save_data(data)
