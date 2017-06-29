@@ -177,3 +177,30 @@ class Match(models.Model):
 
         standing.sort(cls.compare_team)
         return standing
+
+
+class Info(models.Model):
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    round = models.IntegerField()
+    won = models.IntegerField()
+    drawn = models.IntegerField()
+    lost = models.IntegerField()
+    home_won = models.IntegerField()
+    home_drawn = models.IntegerField()
+    home_lost = models.IntegerField()
+    away_won = models.IntegerField()
+    away_drawn = models.IntegerField()
+    away_lost = models.IntegerField()
+    gf = models.IntegerField()
+    ga = models.IntegerField()
+    rank = models.IntegerField()
+    movement = models.IntegerField()
+
+    @property
+    def gd(self):
+        return self.gf - self.ga
+
+    @property
+    def points(self):
+        return self.won * 3 + self.drawn
