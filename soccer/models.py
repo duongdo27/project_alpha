@@ -46,9 +46,11 @@ class Team(models.Model):
             points.append(info.points)
             ranks.append(info.rank)
 
-        return {'rounds': rounds,
-                'points': points,
-                'ranks': ranks}
+        return {'rounds': rounds, 'points': points, 'ranks': ranks,
+                'won': info.won, 'drawn': info.drawn, 'lost': info.lost,
+                'home_won': info.home_won, 'home_drawn': info.home_drawn, 'home_lost': info.home_lost,
+                'away_won': info.away_won, 'away_drawn': info.away_drawn, 'away_lost': info.away_lost,
+                }
 
 
 class Match(models.Model):

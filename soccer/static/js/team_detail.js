@@ -1,5 +1,5 @@
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
+var performanceCtx = document.getElementById('performanceChart').getContext('2d');
+var performanceChart = new Chart(performanceCtx, {
   type: 'line',
   data: {
     labels: graph_data.rounds,
@@ -70,3 +70,94 @@ var myChart = new Chart(ctx, {
     }
   }
 });
+
+var winCtx = document.getElementById('winChart').getContext('2d');
+var winChart = new Chart(winCtx, {
+  type: 'pie',
+  data: {
+    datasets: [{
+        data: [
+            graph_data.won,
+            graph_data.drawn,
+            graph_data.lost,
+        ],
+        backgroundColor: [
+            "green",
+            "blue",
+            "red",
+        ],
+    }],
+    labels: [
+        "Won",
+        "Drawn",
+        "Lost"
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text:'Won Ratio'
+    },
+  }
+});
+
+var homewinCtx = document.getElementById('homewinChart').getContext('2d');
+var homewinChart = new Chart(homewinCtx, {
+  type: 'pie',
+  data: {
+    datasets: [{
+        data: [
+            graph_data.home_won,
+            graph_data.home_drawn,
+            graph_data.home_lost,
+        ],
+        backgroundColor: [
+            "green",
+            "blue",
+            "red",
+        ],
+    }],
+    labels: [
+        "Won",
+        "Drawn",
+        "Lost"
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text:'Home Won Ratio'
+    },
+  }
+});
+
+var awaywinCtx = document.getElementById('awaywinChart').getContext('2d');
+var awaywinChart = new Chart(awaywinCtx, {
+  type: 'pie',
+  data: {
+    datasets: [{
+        data: [
+            graph_data.away_won,
+            graph_data.away_drawn,
+            graph_data.away_lost,
+        ],
+        backgroundColor: [
+            "green",
+            "blue",
+            "red",
+        ],
+    }],
+    labels: [
+        "Won",
+        "Drawn",
+        "Lost"
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text:'Away Won Ratio'
+    },
+  }
+});
+

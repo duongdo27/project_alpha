@@ -5,7 +5,21 @@
 <h1 class="text-danger">{{ object.name }}</h1>
 <h3 class="text-success">{{ league.name }} ({{ league.parent }}) {{ league.year }}</h3>
 
-<canvas id="myChart"></canvas>
+<div class="row">
+    <div class="col-sm-12">
+        <canvas id="performanceChart"></canvas>
+    </div>
+    <br>
+    <div class="col-sm-4">
+        <canvas id="winChart"></canvas>
+    </div>
+    <div class="col-sm-4">
+        <canvas id="homewinChart"></canvas>
+    </div>
+    <div class="col-sm-4">
+        <canvas id="awaywinChart"></canvas>
+    </div>
+</div>
 <br>
 <a class="btn btn-warning btn-lg" href="{% url 'soccer:league_detail' league.id %}">Back</a>
 {% endblock %}
