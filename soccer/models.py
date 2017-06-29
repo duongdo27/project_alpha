@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import Q
 
 
 class League(models.Model):
@@ -25,6 +26,25 @@ class Team(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_graph_data(self, league):
+        matches = Match.objects.filter(league=league)\
+            .filter(Q(home_team=self) | Q(away_team=self)).order_by('round')
+
+        rounds = []
+        points = []
+        current_point = 0
+        for match in matches:
+            rounds.append(match.round)
+
+            if match.home_score == match.away_score:
+                current_point += 1
+            elif (match.home_score > match.away_score and match.home_team == self) \
+                    or (match.home_score < match.away_score and match.away_team == self):
+                current_point += 3
+            points.append(current_point)
+
+        return {'rounds': rounds, 'points': points}
 
 
 class Match(models.Model):
