@@ -15,39 +15,41 @@
         <th>GD</th>
         <th>Points</th>
     </tr>
-    {% for team, value in final_standing %}
+
+    {% with data|last as last_round_data %}
+    {% for info in last_round_data.1 %}
     <tr>
-        {% with final_standing|length as total %}
+        {% with last_round_data.1|length as total %}
         {% with forloop.counter|get_standing_color:total as text_class %}
-            <td class="{{ text_class }}">{{ forloop.counter }}</td>
+            <td class="{{ text_class }}">{{ info.rank }}</td>
             <td>
-                <a class="{{ text_class }}" href="{% url 'soccer:team_detail' object.id team.id %}">
-                    {{ team.name }}
+                <a class="{{ text_class }}" href="{% url 'soccer:team_detail' object.id info.team.id %}">
+                    {{ info.team.name }}
                 </a>
             </td>
-            <td class="{{ text_class }}">{{ value.won }}</td>
-            <td class="{{ text_class }}">{{ value.drawn }}</td>
-            <td class="{{ text_class }}">{{ value.lost }}</td>
-            <td class="{{ text_class }}">{{ value.gf }}</td>
-            <td class="{{ text_class }}">{{ value.ga }}</td>
-            <td class="{{ text_class }}">{{ value.gd }}</td>
-            <td class="{{ text_class }}">{{ value.points }}</td>
+            <td class="{{ text_class }}">{{ info.won }}</td>
+            <td class="{{ text_class }}">{{ info.drawn }}</td>
+            <td class="{{ text_class }}">{{ info.lost }}</td>
+            <td class="{{ text_class }}">{{ info.gf }}</td>
+            <td class="{{ text_class }}">{{ info.ga }}</td>
+            <td class="{{ text_class }}">{{ info.gd }}</td>
+            <td class="{{ text_class }}">{{ info.points }}</td>
         {% endwith %}
         {% endwith %}
     </tr>
     {% endfor %}
+    {% endwith %}
 </table>
 
 <div class="panel-group">
-    {% for matches, standing in data %}
+    {% for matches, infos in data %}
     <div class="panel panel-default">
-        {% with forloop.counter as round %}
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a data-toggle="collapse" href="#collapse{{ round }}">Round {{ round }}</a>
+                <a data-toggle="collapse" href="#collapse{{ infos.0.round }}">Round {{ infos.0.round }}</a>
             </h3>
         </div>
-        <div id="collapse{{ round }}" class="panel-collapse collapse">
+        <div id="collapse{{ infos.0.round }}" class="panel-collapse collapse">
             <div class="panel-body">
                 <h4>Matches</h4>
                 <div class="row text-center">
@@ -71,39 +73,38 @@
                         <th>GD</th>
                         <th>Points</th>
                     </tr>
-                    {% for name, value, movement in standing %}
+                    {% for info in infos %}
                     <tr>
-                        {% if movement == 1 %}
-                            <td>{{ forloop.counter }}
+                        {% if info.movement == 1 %}
+                            <td>{{ info.rank }}
                                 <span class="glyphicon glyphicon-triangle-top text-success"></span>
                             </td>
                         {% else %}
-                            {% if movement == 0 %}
-                                <td>{{ forloop.counter }}
+                            {% if info.movement == 0 %}
+                                <td>{{ info.rank }}
                                     <span class="glyphicon glyphicon-triangle-right text-muted"></span>
                                 </td>
                             {% else %}
-                                <td>{{ forloop.counter }}
+                                <td>{{ info.rank }}
                                     <span class="glyphicon glyphicon-triangle-bottom text-danger"></span>
                                 </td>
                             {% endif %}
                         {% endif %}
-                        <td>{{ name }}</td>
-                        <td>{{ round }}</td>
-                        <td>{{ value.won }}</td>
-                        <td>{{ value.drawn }}</td>
-                        <td>{{ value.lost }}</td>
-                        <td>{{ value.gf }}</td>
-                        <td>{{ value.ga }}</td>
-                        <td>{{ value.gd }}</td>
-                        <td>{{ value.points }}</td>
+                        <td>{{ info.team.name }}</td>
+                        <td>{{ info.round }}</td>
+                        <td>{{ info.won }}</td>
+                        <td>{{ info.drawn }}</td>
+                        <td>{{ info.lost }}</td>
+                        <td>{{ info.gf }}</td>
+                        <td>{{ info.ga }}</td>
+                        <td>{{ info.gd }}</td>
+                        <td>{{ info.points }}</td>
                     </tr>
                     {% endfor %}
 
                 </table>
             </div>
         </div>
-        {% endwith %}
     </div>
     {% endfor %}
 </div>

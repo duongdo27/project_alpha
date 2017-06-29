@@ -109,7 +109,8 @@ class LeagueProcessor(object):
                 if match.away_team not in round_data:
                     round_data[match.away_team] = defaultdict(int)
                 self.compute_info(round_data, match)
-        
+
+        data.append(self.compute_rank(round_data, previous_standing))
         self.save_data(data)
 
     def run(self):
