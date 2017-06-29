@@ -36,23 +36,19 @@ class Team(models.Model):
         return self.name
 
     def get_graph_data(self, league):
-        matches = Match.objects.filter(league=league)\
-            .filter(Q(home_team=self) | Q(away_team=self)).order_by('round')
+        infos = Info.objects.filter(league=league, team=self).order_by('round')
 
         rounds = []
         points = []
-        current_point = 0
-        for match in matches:
-            rounds.append(match.round)
+        ranks = []
+        for info in infos:
+            rounds.append(info.round)
+            points.append(info.points)
+            ranks.append(info.rank)
 
-            if match.home_score == match.away_score:
-                current_point += 1
-            elif (match.home_score > match.away_score and match.home_team == self) \
-                    or (match.home_score < match.away_score and match.away_team == self):
-                current_point += 3
-            points.append(current_point)
-
-        return {'rounds': rounds, 'points': points}
+        return {'rounds': rounds,
+                'points': points,
+                'ranks': ranks}
 
 
 class Match(models.Model):
