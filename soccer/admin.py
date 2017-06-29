@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import League, Team, Match
+from .models import League, Team, Match, Info
 
 
 @admin.register(League)
@@ -22,6 +22,12 @@ class MatchAdmin(admin.ModelAdmin):
     search_fields = ("home_team__name", "away_team__name", "round")
     list_filter = ("league__name", "league__year")
 
+
+@admin.register(Info)
+class InfoAdmin(admin.ModelAdmin):
+    list_display = ("team", "league", "round", "points", "rank", "movement")
+    search_fields = ("team__name", "round")
+    list_filter = ("league__name", "league__year")
 
 
 
