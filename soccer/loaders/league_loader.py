@@ -142,9 +142,9 @@ class LeagueLoader(object):
         :param line:
         :return: Find match info
         """
-        if '[abandoned' in line or '[awarded' in line or '[Technical' in line:
+        if '[abandoned' in line.lower() or '[awarded' in line.lower() or '[technical' in line.lower():
             return
-        if line.startswith('['):
+        if line.strip().startswith('['):
             return
         line = line.replace('1.', '').replace(u'\u2013', '-').strip()
 

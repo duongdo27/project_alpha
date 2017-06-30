@@ -94,6 +94,10 @@
   permalink: tablesf/fran
   year: 2014
   matches: 380
+  awarded_matches:
+    - round: 1
+      line: Nantes 0-3 Bastia
+      current_date: Aug 10
 - name: Ligue 1
   parent: France
   permalink: tablesf/fran
@@ -192,11 +196,6 @@
   parent: Netherlands
   permalink: tablesn/ned
   year: 2011
-  matches: 306
-- name: Eredivisie
-  parent: Netherlands
-  permalink: tablesn/ned
-  year: 2012
   matches: 306
 - name: Eredivisie
   parent: Netherlands
