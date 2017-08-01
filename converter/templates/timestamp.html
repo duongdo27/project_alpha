@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Timestamp converter</h1>
+    </div>
+</div>
+<div ng-app="main-app">
+    <div ng-controller="main-ctrl">
+        <p>Unix timestamp: {[local_now.format('X')]}</p>
+        <p>UTC: {[utc_now.format('YYYY-MM-DD HH:mm:ss')]}</p>
+        <p>Local: {[local_now.format('YYYY-MM-DD HH:mm:ss')]} ({[local_tz]})</p>
+        <hr>
+        <p>Unix timestamp: <input type="number" ng-model="ts1" ng-change="updateTs1()"></p>
+        <p>UTC: {[utc1.format('YYYY-MM-DD HH:mm:ss')]}</p>
+        <p>Local: {[local1.format('YYYY-MM-DD HH:mm:ss')]} ({[local_tz]})</p>
+        <hr>
+        <p>UTC:
+        <input type="number" ng-model="year2" min="1970" max="2037" ng-change="updateD2()"> -
+        <input type="number" ng-model="month2" min="1" max="12" ng-change="updateD2()"> -
+        <input type="number" ng-model="date2" min="1" max="31" ng-change="updateD2()"> &nbsp
+        <input type="number" ng-model="hour2" min="0" max="23" ng-change="updateD2()"> :
+        <input type="number" ng-model="minute2" min="0" max="59" ng-change="updateD2()"> :
+        <input type="number" ng-model="second2" min="0" max="59" ng-change="updateD2()">
+        </p>
+        <p>Unix timestamp: {[utc2.format('X')]}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.13/moment-timezone-with-data.min.js"></script>
+<script>
+  var module = angular.module("main-app", []);
+  module.config(['$interpolateProvider', function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+  module.controller('main-ctrl', function($scope, $interval) {
+    $scope.local_tz = moment.tz.guess();
+
+    var tick = function() {
+      $scope.local_now = moment();
+      $scope.utc_now = moment.utc();
+    }
+    tick();
+    $interval(tick, 1000);
+
+    $scope.ts1 = parseInt(moment().format('X'));
+    $scope.updateTs1 = function() {
+      $scope.local1 = moment.unix($scope.ts1);
+      $scope.utc1 = moment.unix($scope.ts1).tz('UTC');
+    }
+    $scope.updateTs1();
+
+    $scope.year2 = $scope.utc_now.year();
+    $scope.month2 = $scope.utc_now.month() + 1;
+    $scope.date2 = $scope.utc_now.date();
+    $scope.hour2 = $scope.utc_now.hour();
+    $scope.minute2 = $scope.utc_now.minute();
+    $scope.second2 = $scope.utc_now.second();
+    $scope.updateD2 = function() {
+      $scope.utc2 = moment.utc([$scope.year2, $scope.month2 - 1, $scope.date2, $scope.hour2, $scope.minute2, $scope.second2]);
+    }
+    $scope.updateD2();
+
+  });
+</script>
+{% endblock %}

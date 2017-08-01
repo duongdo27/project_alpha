@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('soccer.urls', namespace='soccer')),
+    url(r'^converter/', include('converter.urls', namespace='converter')),
 ]
