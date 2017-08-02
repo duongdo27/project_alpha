@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Color converter</h1>
+    </div>
+</div>
+<div ng-app="main-app">
+    <div ng-controller="main-ctrl">
+        <p>Red: <input type="range" ng-model="red1" min="0" max="255" ng-change="updateC1()">{[red1]}</p>
+        <p>Green: <input type="range" ng-model="green1" min="0" max="255" ng-change="updateC1()">{[green1]}</p>
+        <p>Blue: <input type="range" ng-model="blue1" min="0" max="255" ng-change="updateC1()">{[blue1]}</p>
+        <p>Alpha: <input type="range" ng-model="alpha1" step="0.01" min="0" max="1" ng-change="updateC1()">{[alpha1]}</p>
+        <div style="height: 100px; width: 100px; background-color: rgba({[red1]}, {[green1]}, {[blue1]}, {[alpha1]});"></div>
+        <p>Hex: {[color1.toCSS()]}</p>
+        <p>HSL: {[color1.getHue() | number:0]}, {[color1.getSaturation() * 100 | number:2]}%, {[color1.getLightness() * 100 | number:2]}%</p>
+
+        <hr>
+
+        <p>Hue: <input type="range" ng-model="hue2" min="0" max="359" ng-change="updateC2()">{[hue2]}</p>
+        <p>Saturation: <input type="range" ng-model="saturation2" min="0" max="1" step="0.01" ng-change="updateC2()">{[saturation2]}</p>
+        <p>Lightness: <input type="range" ng-model="lightness2" min="0" max="1" step="0.01" ng-change="updateC2()">{[lightness2]}</p>
+        <p>Alpha: <input type="range" ng-model="alpha2" step="0.01" min="0" max="1" ng-change="updateC2()">{[alpha2]}</p>
+
+        <div style="height: 100px; width: 100px; background-color: rgba({[color2.getRed() * 255 | number:0]}, {[color2.getGreen() * 255 | number:0]}, {[color2.getBlue() * 255 | number:0]}, {[alpha2]});"></div>
+        <p>Hex: {[color2.toCSS()]}</p>
+        <p>RGB: {[color2.getRed() * 255 | number:0]}, {[color1.getGreen() * 255 | number:0]}, {[color1.getBlue() * 255 | number:0]}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-js/1.0.1/color.min.js"></script>
+<script>
+  var Color = net.brehaut.Color;
+  var module = angular.module("main-app", []);
+  module.config(['$interpolateProvider', function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+  module.controller('main-ctrl', function($scope, $interval) {
+     $scope.red1 = 200;
+     $scope.green1 = 200;
+     $scope.blue1 = 0;
+     $scope.alpha1 = 1;
+
+     $scope.updateC1 = function(){
+      $scope.color1 = Color([$scope.red1, $scope.green1, $scope.blue1]);
+     }
+     $scope.updateC1();
+
+     $scope.hue2 = 60;
+     $scope.saturation2 = 1;
+     $scope.lightness2 = 0.39;
+     $scope.alpha2 = 1;
+
+     $scope.updateC2 = function(){
+      $scope.color2 = Color({hue: $scope.hue2, saturation: $scope.saturation2, lightness: $scope.lightness2});
+     }
+     $scope.updateC2();
+  });
+</script>
+{% endblock %}
