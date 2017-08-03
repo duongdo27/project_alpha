@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Base64 converter</h1>
+    </div>
+</div>
+<div ng-app="main-app">
+    <div ng-controller="main-ctrl">
+        <p>Text: <textarea cols="100" rows="5" ng-model="text1" ng-change="updateT1()"></textarea></p>
+        <p>Binary: {[binary1]}</p>
+        <hr>
+        <p>Binary: <textarea cols="100" rows="5" ng-model="binary2" ng-change="updateB2()"></textarea></p>
+        <p>Text: {[text2]}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-js/1.0.1/color.min.js"></script>
+<script>
+    var module = angular.module("main-app", []);
+    module.config(['$interpolateProvider', function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[');
+        $interpolateProvider.endSymbol(']}');
+    }]);
+    module.controller('main-ctrl', function($scope, $interval) {
+     $scope.text1 = "Hello World";
+
+     $scope.updateT1 = function(){
+      $scope.binary1 = btoa($scope.text1);
+     }
+     $scope.updateT1();
+
+     $scope.binary2 = "SGVsbG8gV29ybGQ=";
+     $scope.updateB2 = function(){
+        try {
+          $scope.text2 = atob($scope.binary2);
+        }
+        catch(err) {
+          $scope.text2 = "Invalid input";
+        }
+     }
+     $scope.updateB2();
+
+    });
+</script>
+{% endblock %}

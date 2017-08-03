@@ -7,3 +7,7 @@ class TimestampView(TemplateView):
 
 class ColorView(TemplateView):
     template_name = 'color.html'
+
+
+class Base64View(TemplateView):
+    template_name = 'base64.html'
