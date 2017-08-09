@@ -11,3 +11,7 @@ class ColorView(TemplateView):
 
 class Base64View(TemplateView):
     template_name = 'base64.html'
+
+
+class BinaryView(TemplateView):
+    template_name = 'binary.html'

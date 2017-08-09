@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Binary converter</h1>
+    </div>
+</div>
+<div ng-app="main-app">
+    <div ng-controller="main-ctrl">
+        <p>Decimal: <input type="number" min="0" ng-model="dec1" /></p>
+        <p>Binary: {[dec1.toString(2)]}</p>
+        <p>Hex: {[dec1.toString(16)]}</p>
+        <hr>
+        <p>Binary: <input size="100" ng-model="bin2" ng-change="updateB2()"/></p>
+        <p>Decimal: {[dec2]}</p>
+        <p>Hex: {[hex2]}</p>
+        <p>ASCII: {[ascii2]}</p>
+        <hr>
+        <p>Hex: <input size="100" ng-model="hex3" ng-change="updateH3()"/></p>
+        <p>Decimal: {[dec3]}</p>
+        <p>Binary: {[bin3]}</p>
+        <p>ASCII: {[ascii3]}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-js/1.0.1/color.min.js"></script>
+<script>
+    var module = angular.module("main-app", []);
+    module.config(['$interpolateProvider', function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+    module.controller('main-ctrl', function($scope, $interval) {
+     $scope.dec1 = 42;
+
+     $scope.bin2 = "01000001";
+     $scope.updateB2 = function() {
+       var bin2 = $scope.bin2.replace(/\s+/g, '');
+       nonbinary_pat = /[^0,1]/;
+       if(nonbinary_pat.test(bin2) || bin2.length == 0) {
+          $scope.dec2 = 'Invalid binary';
+          $scope.hex2 = 'Invalid binary';
+          $scope.ascii2 = 'Invalid binary';
+       }
+       else {
+          $scope.dec2 = parseInt(bin2, 2);
+          $scope.hex2 = parseInt(bin2, 2).toString(16);
+          if(bin2.length % 8 != 0) {
+            $scope.ascii2 = 'Length must be multiple of 8';
+          }
+          else {
+            $scope.ascii2 = "";
+            var i = 0;
+            while(i < bin2.length) {
+              $scope.ascii2 += String.fromCharCode(parseInt(bin2.substring(i, i+8), 2));
+              i += 8;
+            }
+          }
+
+       }
+     }
+     $scope.updateB2();
+
+     $scope.hex3 = "4142";
+     $scope.updateH3 = function() {
+       var hex3 = $scope.hex3.replace(/\s+/g, '');
+       nonbinary_pat = /[^0-9,a-f,A-F]/;
+       if(nonbinary_pat.test(hex3) || hex3.length == 0) {
+          $scope.dec3 = 'Invalid hex';
+          $scope.bin3 = 'Invalid hex';
+          $scope.ascii3 = 'Invalid hex';
+       }
+       else {
+          $scope.dec3 = parseInt(hex3, 16);
+          $scope.bin3 = parseInt(hex3, 16).toString(2);
+          if(hex3.length % 2 != 0) {
+            $scope.ascii3 = 'Length must be multiple of 2';
+          }
+          else {
+            $scope.ascii3 = "";
+            var i = 0;
+            while(i < hex3.length) {
+              $scope.ascii3 += String.fromCharCode(parseInt(hex3.substring(i, i+2), 16));
+              i += 2;
+            }
+          }
+
+       }
+     }
+     $scope.updateH3();
+
+    });
+</script>
+{% endblock %}
